@@ -24,6 +24,21 @@ CREATE SCHEMA sales_xmp
 USE sales_xmp;
 
 
+CREATE TABLE salutation (
+    id SMALLINT UNSIGNED AUTO_INCREMENT,
+    salutation VARCHAR(20) NOT NULL
+        CHECK (CHAR_LENGTH(salutation) > 1),
+    is_active BOOL NOT NULL DEFAULT TRUE
+        COMMENT 'Inactive salutations are only used for existing persons'
+        CHECK (is_active IN (FALSE, TRUE)),
+    PRIMARY KEY (id),
+    UNIQUE unq_salutation (salutation)
+)
+    WITH SYSTEM VERSIONING
+    ENGINE InnoDB
+    COMMENT 'Salutation titles, to be used in communications'
+;
+
 CREATE TABLE customer (
     uuid UUID DEFAULT UUID_v7(),
     email VARCHAR(255) NOT NULL,
@@ -42,10 +57,12 @@ CREATE TABLE person (
     customer_uuid UUID NOT NULL,
     first_name VARCHAR(100) NOT NULL,
     last_name VARCHAR(100) NOT NULL,
+    salutation_id SMALLINT UNSIGNED NULL,
     date_of_birth DATE NOT NULL DEFAULT '0000-00-00',
     PRIMARY KEY (uuid),
     UNIQUE unq_customer_uuid (customer_uuid),
-    FOREIGN KEY (customer_uuid) REFERENCES customer(uuid) ON DELETE CASCADE ON UPDATE RESTRICT
+    FOREIGN KEY (customer_uuid) REFERENCES customer(uuid) ON DELETE CASCADE ON UPDATE RESTRICT,
+    FOREIGN KEY (salutation_id) REFERENCES salutation (id) ON DELETE RESTRICT ON UPDATE RESTRICT
 )
     WITH SYSTEM VERSIONING
     ENGINE=InnoDB
