@@ -74,7 +74,8 @@ CREATE TABLE company (
     customer_uuid UUID NOT NULL,
     company_name VARCHAR(255) NOT NULL,
     tax_id VARCHAR(50),
-    registration_number VARCHAR(50),
+    registration_number VARCHAR(50) NOT NULL
+        CHECK (registration_number > ''),
     PRIMARY KEY (uuid),
     UNIQUE unq_customer_uuid (customer_uuid),
     FOREIGN KEY (customer_uuid) REFERENCES customer(uuid) ON DELETE CASCADE ON UPDATE RESTRICT
