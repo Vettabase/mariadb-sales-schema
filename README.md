@@ -75,6 +75,7 @@ Contributions are welcome.
 ## Copyright and Lucense
 
 License: GNU Affero GPL v3. See the `LICENSE` file.
+
 SPDX: [AGPL-3.0-only](http://spdx.org/licenses/AGPL-3.0-only.html).
 
 Copyright Vettabase Ltd 2025
