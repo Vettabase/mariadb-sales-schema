@@ -137,8 +137,42 @@ CREATE TABLE company_contact (
     COMMENT 'Link between a company and a contact'
 ;
 
+CREATE TABLE category (
+    id INT UNSIGNED AUTO_INCREMENT,
+    name VARCHAR(100) NOT NULL
+        CHECK (name > ''),
+    PRIMARY KEY (id),
+    UNIQUE unq_name (name)
+)
+    WITH SYSTEM VERSIONING
+    ENGINE InnoDB
+    COMMENT 'Product category'
+;
+
+CREATE TABLE category_arc (
+    id INT UNSIGNED AUTO_INCREMENT,
+    from_category INT UNSIGNED NOT NULL,
+    to_category INT UNSIGNED NOT NULL,
+    PRIMARY KEY (id),
+    UNIQUE unq_from_category_to_category (from_category, to_category),
+    FOREIGN KEY (from_category)
+        REFERENCES category (id)
+        ON DELETE CASCADE
+        ON UPDATE RESTRICT,
+    FOREIGN KEY (to_category)
+        REFERENCES category (id)
+        ON DELETE CASCADE
+        ON UPDATE RESTRICT
+)
+    WITH SYSTEM VERSIONING
+    ENGINE InnoDB
+    COMMENT 'An arc in the graph representing categories hierarchies'
+;
+
 CREATE TABLE product (
     uuid UUID DEFAULT UUID_v7(),
+    main_category_id INT UNSIGNED NOT NULL
+        COMMENT 'A product can belong to more categories, but must have one main category',
     sku VARCHAR(50) NOT NULL,
     name VARCHAR(255) NOT NULL,
     description TEXT,
@@ -146,11 +180,35 @@ CREATE TABLE product (
     stock_quantity INT NOT NULL DEFAULT 0,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     PRIMARY KEY (uuid),
-    UNIQUE unq_sku (sku)
+    UNIQUE unq_sku (sku),
+    FOREIGN KEY (main_category_id)
+        REFERENCES category (id)
+        ON DELETE CASCADE
+        ON UPDATE RESTRICT
 )
     WITH SYSTEM VERSIONING
     ENGINE InnoDB
     COMMENT 'A product that we sell'
+;
+
+CREATE TABLE product_category (
+    id INT UNSIGNED AUTO_INCREMENT,
+    category_id INT UNSIGNED NOT NULL,
+    product_uuid UUID NOT NULL,
+    PRIMARY KEY (id),
+    UNIQUE unq_category_id_product_uuid (category_id, product_uuid),
+    FOREIGN KEY (category_id)
+        REFERENCES category (id)
+        ON DELETE CASCADE
+        ON UPDATE RESTRICT,
+    FOREIGN KEY (product_uuid)
+        REFERENCES product (uuid)
+        ON DELETE CASCADE
+        ON UPDATE RESTRICT
+)
+    WITH SYSTEM VERSIONING
+    ENGINE InnoDB
+    COMMENT 'Relationship between product and category'
 ;
 
 CREATE TABLE sales_order_status (
