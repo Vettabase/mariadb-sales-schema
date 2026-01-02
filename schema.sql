@@ -96,6 +96,14 @@ CREATE TABLE contact_type (
     COMMENT 'Supported contact types, like emails or phone numbers'
 ;
 
+INSERT INTO contact_type (name) VALUES
+    ('email'),
+    ('phone'),
+    ('fax'),
+    ('address'),
+    ('linkedin')
+;
+
 CREATE TABLE contact (
     uuid UUID DEFAULT UUID_v7(),
     contact_type_uuid UUID NOT NULL,
