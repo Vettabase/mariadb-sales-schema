@@ -270,7 +270,30 @@ CREATE TABLE order_line (
 
 DELIMITER ||
 
-CREATE FUNCTION moo()
+CREATE OR REPLACE FUNCTION get_contact_type_uuid(i_name TEXT)
+    RETURNS UUID
+    NOT DETERMINISTIC
+    READS SQL DATA
+    COMMENT
+'Returns UUID of the specified contact_type.
+Example: SELECT get_contact_type_uuid(''email'');'
+BEGIN
+    DECLARE ret UUID DEFAULT NULL;
+    DECLARE error_message VARCHAR(100) DEFAULT NULL;
+    SET ret := (
+        SELECT uuid
+            FROM contact_type
+            WHERE name = i_name
+    );
+    IF ret IS NULL THEN
+        SET error_message := CONCAT('Contact type not found: ', QUOTE(i_name));
+        SIGNAL SQLSTATE '02000'
+            SET MESSAGE_TEXT = error_message;
+    END IF;
+    RETURN ret;
+END;
+
+CREATE OR REPLACE FUNCTION moo()
     RETURNS TEXT
     DETERMINISTIC
     READS SQL DATA
@@ -286,7 +309,6 @@ BEGIN
 ..."Have you mooed today?"...
 ';
 END;
-
 ||
 DELIMITER ;
 
