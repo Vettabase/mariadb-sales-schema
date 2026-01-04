@@ -58,7 +58,8 @@ CREATE TABLE customer (
     password_hash VARCHAR(255) NOT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     PRIMARY KEY (uuid),
-    UNIQUE unq_email (email)
+    UNIQUE unq_email_username (email, username)
+        COMMENT 'Multiple users from the same email are ok, but they must use different usernames. Usernames don''t need be unique.'
 )
     WITH SYSTEM VERSIONING
     ENGINE InnoDB
