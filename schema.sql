@@ -51,6 +51,9 @@ INSERT INTO salutation (salutation) VALUES
 CREATE TABLE customer (
     uuid UUID DEFAULT UUID_v7(),
     email VARCHAR(255) NOT NULL,
+    username VARCHAR(255) NOT NULL
+        DEFAULT CONCAT('@', SUBSTRING_INDEX(email, '@', 1), '_', SUBSTRING_INDEX(email, '@', 2))
+        COMMENT 'usernames must have only 1 @ as their first character',
     password_hash VARCHAR(255) NOT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     PRIMARY KEY (uuid),
@@ -303,9 +306,6 @@ BEGIN
     END IF;
     RETURN ret;
 END;
-
-||
-DELIMITER ;
 
 CREATE OR REPLACE FUNCTION moo()
     RETURNS TEXT
