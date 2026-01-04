@@ -297,12 +297,15 @@ BEGIN
             WHERE name = i_name
     );
     IF ret IS NULL THEN
-        SET error_message := CONCAT('Contact type not found: ', QUOTE(i_name));z
+        SET error_message := CONCAT('Contact type not found: ', QUOTE(i_name));
         SIGNAL SQLSTATE '02000'
             SET MESSAGE_TEXT = error_message;
     END IF;
     RETURN ret;
 END;
+
+||
+DELIMITER ;
 
 CREATE OR REPLACE FUNCTION moo()
     RETURNS TEXT
