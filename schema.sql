@@ -39,6 +39,15 @@ CREATE TABLE salutation (
     COMMENT 'Salutation titles, to be used in communications'
 ;
 
+INSERT INTO salutation (salutation) VALUES
+    ('Mr'),
+    ('Ms'),
+    ('Mrs'),
+    ('Mx'),
+    ('Dr'),
+    ('Prof')
+;
+
 CREATE TABLE customer (
     uuid UUID DEFAULT UUID_v7(),
     email VARCHAR(255) NOT NULL,
@@ -286,7 +295,7 @@ BEGIN
             WHERE name = i_name
     );
     IF ret IS NULL THEN
-        SET error_message := CONCAT('Contact type not found: ', QUOTE(i_name));
+        SET error_message := CONCAT('Contact type not found: ', QUOTE(i_name));z
         SIGNAL SQLSTATE '02000'
             SET MESSAGE_TEXT = error_message;
     END IF;
