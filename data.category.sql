@@ -66,6 +66,8 @@ INSERT INTO category_arc (to_category, from_category) VALUES
     - LPT: Laptops (category 211)
     - GMC: Gaming Computers (category 212)
     - PER: Peripherals (category 213)
+    - TVS: TV (category 221)
+    - WFI: Wi-Fi (category 222)
 
     Category-Specific Parts:
 
@@ -87,10 +89,24 @@ INSERT INTO category_arc (to_category, from_category) VALUES
        - TIER: Quality tier (ST=Standard, PR=Pro, UL=Ultra)
        Example: PER-KB-MX-PR
 
+    4. TV (221): TVS-[SIZE]-[TECH]-[RES]
+       - SIZE: Screen size in inches (32, 43, 55, 65, 75)
+       - TECH: Display technology (LE=LED, QL=QLED, OL=OLED)
+       - RES: Resolution (HD, FH=Full HD, 4K, 8K)
+       Example: TVS-55-QL-4K
+
+    5. Wi-Fi (222): WFI-[TYPE]-[SPEED]-[BAND]
+       - TYPE: Device type (RT=Router, EX=Extender, ME=Mesh)
+       - SPEED: WiFi speed class (AC12=AC1200, AX6=AX6000, AX11=AX11000)
+       - BAND: Band support (SG=Single, DL=Dual, TR=Tri-band)
+       Example: WFI-RT-AX6-DL
+
     Validation:
     - Laptops: ^LPT-[A-Z]{2}-[0-9]{2}-[A-Z0-9]{2,3}$
     - Gaming: ^GMC-[A-Z]{2}-[0-9]{4}-[A-Z0-9]{2,3}$
     - Peripherals: ^PER-[A-Z]{2}-[A-Z0-9]{2,3}-[A-Z]{2}$
+    - TV: ^TVS-[0-9]{2}-[A-Z]{2}-[A-Z0-9]{2,3}$
+    - Wi-Fi: ^WFI-[A-Z]{2}-[A-Z0-9]{2,4}-[A-Z]{2}$
 
     Design rationale:
     - Category prefix enables immediate product classification
@@ -104,6 +120,8 @@ INSERT INTO sku_format (category_id, category_code, format, `regexp`) VALUES
       (211,  'LPT',  'LPT-[FORM]-[SIZE]-[SPEC]',     '^LPT-[A-Z]{2}-[0-9]{2}-[A-Z0-9]{2,3}$')
     , (212,  'GMC',  'GMC-[TIER]-[GPU]-[CPU]',       '^GMC-[A-Z]{2}-[0-9]{4}-[A-Z0-9]{2,3}$')
     , (213,  'PER',  'PER-[TYPE]-[FEATURE]-[TIER]',  '^PER-[A-Z]{2}-[A-Z0-9]{2,3}-[A-Z]{2}$')
+    , (221,  'TVS',  'TVS-[SIZE]-[TECH]-[RES]',      '^TVS-[0-9]{2}-[A-Z]{2}-[A-Z0-9]{2,3}$')
+    , (222,  'WFI',  'WFI-[TYPE]-[SPEED]-[BAND]',    '^WFI-[A-Z]{2}-[A-Z0-9]{2,4}-[A-Z]{2}$')
 ;
 
 INSERT INTO product (main_category_id, sku, name, description, price, stock_quantity) VALUES
