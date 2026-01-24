@@ -346,6 +346,9 @@ Example: SELECT get_product_uuid_by_sku(''LPT-UB-14-I5'');'
 BEGIN
     DECLARE ret UUID DEFAULT NULL;
     DECLARE error_message VARCHAR(100) DEFAULT NULL;
+    IF i_sku IS NULL THEN
+        RETURN NULL;
+    END IF;
     SET ret := (
         SELECT uuid
             FROM product
