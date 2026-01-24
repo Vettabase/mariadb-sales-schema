@@ -200,8 +200,10 @@ INSERT INTO product (main_category_id, sku, name, description, price, stock_quan
 ;
 
 -- Add secondary category relationships
--- Enterprise Multifunction printer is also a scanner
-INSERT INTO product_category (category_id, product_uuid)
-SELECT 312, uuid FROM product WHERE sku = 'PRT-MF-CL-EN';
-
+INSERT INTO product_category
+    (category_id, product_uuid)
+    VALUES
+    -- Enterprise Multifunction printer is also a scanner
+    (312, get_product_uuid_by_sku('PRT-MF-CL-EN'))
+;
 
