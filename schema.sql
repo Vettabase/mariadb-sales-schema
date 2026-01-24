@@ -362,21 +362,56 @@ BEGIN
     RETURN ret;
 END;
 
+/*
+Tests:
+SELECT @uuid := get_product_uuid_by_sku('PRT-MF-CL-EN');
+DELETE FROM product_category;
+CALL insert_secondary_product_category_rel(312, 'PRT-MF-CL-EN');
+DELETE FROM product_category;
+CALL insert_secondary_product_category_rel(312, 'PRT-MF-CL-EN', @uuid);
+DELETE FROM product_category;
+CALL insert_secondary_product_category_rel(312, NULL, @uuid);
+*/
 CREATE OR REPLACE PROCEDURE insert_secondary_product_category_rel(
     IN i_category_id INT UNSIGNED,
-    IN i_product_sku VARCHAR(50)
+    IN i_product_sku VARCHAR(50),
+    IN i_product_uuid VARCHAR(50) DEFAULT NULL
 )
     MODIFIES SQL DATA
     COMMENT
 'Insert a secondary product category relationship.
 The product''s id is found based on i_product_sku.
-Example: CALL insert_secondary_product_category_rel(312, ''PRT-MF-CL-EN'');'
+Examples:
+    CALL insert_secondary_product_category_rel(312, ''PRT-MF-CL-EN'');
+    CALL insert_secondary_product_category_rel(312, ''PRT-MF-CL-EN'', ''019beff4-5162-7558-9080-fdabde69dac2'');'
 BEGIN
+    -- If i_product_uuid is NULL, find it based on i_product_sku.
+    -- If not possible because i_product_sku is NULL, emit an error.
+    DECLARE v_product_uuid VARCHAR(50) DEFAULT i_product_uuid;
+    IF i_product_uuid IS NULL THEN
+        IF i_product_sku IS NULL THEN
+            SIGNAL SQLSTATE '02000'
+                SET MESSAGE_TEXT = 'You need to specify at least i_product_sku or i_product_uuid'
+            ;
+        ELSE
+            SET v_product_uuid := get_product_uuid_by_sku(i_product_sku);
+        END IF;
+    END IF;
+
     -- Insert into product_category and return the inserted row
     INSERT INTO product_category (category_id, product_uuid)
-        VALUES (i_category_id, get_product_uuid_by_sku(i_product_sku))
+        VALUES (i_category_id, v_product_uuid)
         RETURNING category_id, product_uuid
     ;
+
+    -- i_product_sku is only useful to find the product's SKU.
+    -- If both are specified, emit a warning.
+    -- We must do it here, ot the INSERT would reset the diagnostic area.
+    IF i_product_uuid IS NOT NULL AND i_product_sku IS NOT NULL THEN
+        SIGNAL SQLSTATE '01000'
+            SET MESSAGE_TEXT = 'Both product_sku and product_uuid were specified, so product_sku was ignored'
+        ;
+    END IF;
 END;
 
 CREATE OR REPLACE FUNCTION moo()
