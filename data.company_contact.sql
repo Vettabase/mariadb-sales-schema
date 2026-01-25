@@ -34,46 +34,55 @@ INSERT INTO contact
 ;
 
 -- Link contacts to companies
--- We need to get the UUIDs that were just inserted
--- Since contacts don't have a unique identifier we can query on,
--- we'll use variables to store the generated UUIDs
+-- Store UUIDs in variables to avoid redundant subqueries
 
 SET @email_contact_type := get_contact_type_uuid('email');
 SET @phone_contact_type := get_contact_type_uuid('phone');
 SET @fax_contact_type := get_contact_type_uuid('fax');
 
+-- Get company UUIDs
+SET @company_highland := (SELECT uuid FROM company WHERE customer_uuid = '62fdc7ca-e96c-11f0-a38a-560005d947e2');
+SET @company_edinburgh := (SELECT uuid FROM company WHERE customer_uuid = '62fdc814-e96c-11f0-a38a-560005d947e2');
+SET @company_glasgow := (SELECT uuid FROM company WHERE customer_uuid = '62fdc81c-e96c-11f0-a38a-560005d947e2');
+SET @company_paris := (SELECT uuid FROM company WHERE customer_uuid = '62fdc824-e96c-11f0-a38a-560005d947e2');
+SET @company_lyon := (SELECT uuid FROM company WHERE customer_uuid = '62fdc82a-e96c-11f0-a38a-560005d947e2');
+SET @company_berlin := (SELECT uuid FROM company WHERE customer_uuid = '62fdc831-e96c-11f0-a38a-560005d947e2');
+SET @company_munich := (SELECT uuid FROM company WHERE customer_uuid = '62fdc838-e96c-11f0-a38a-560005d947e2');
+SET @company_hamburg := (SELECT uuid FROM company WHERE customer_uuid = '62fdc83f-e96c-11f0-a38a-560005d947e2');
+SET @company_barcelona := (SELECT uuid FROM company WHERE customer_uuid = '62fdc847-e96c-11f0-a38a-560005d947e2');
+SET @company_rome := (SELECT uuid FROM company WHERE customer_uuid = '62fdc84e-e96c-11f0-a38a-560005d947e2');
+
 INSERT INTO company_contact (company_uuid, contact_uuid) VALUES
     /* Companies from Scotland */
     -- Highland Tech Solutions Ltd
-    ((SELECT uuid FROM company WHERE customer_uuid = '62fdc7ca-e96c-11f0-a38a-560005d947e2'), (SELECT uuid FROM contact WHERE contact_type_uuid = @email_contact_type AND contact_value = 'info@highlandtech.co.uk')),
-    ((SELECT uuid FROM company WHERE customer_uuid = '62fdc7ca-e96c-11f0-a38a-560005d947e2'), (SELECT uuid FROM contact WHERE contact_type_uuid = @phone_contact_type AND contact_value = '+44 131 555 0101')),
-    ((SELECT uuid FROM company WHERE customer_uuid = '62fdc7ca-e96c-11f0-a38a-560005d947e2'), (SELECT uuid FROM contact WHERE contact_type_uuid = @fax_contact_type AND contact_value = '+44 131 555 0102')),
+    (@company_highland, (SELECT uuid FROM contact WHERE contact_type_uuid = @email_contact_type AND contact_value = 'info@highlandtech.co.uk')),
+    (@company_highland, (SELECT uuid FROM contact WHERE contact_type_uuid = @phone_contact_type AND contact_value = '+44 131 555 0101')),
+    (@company_highland, (SELECT uuid FROM contact WHERE contact_type_uuid = @fax_contact_type AND contact_value = '+44 131 555 0102')),
     -- Edinburgh Digital Services Ltd
-    ((SELECT uuid FROM company WHERE customer_uuid = '62fdc814-e96c-11f0-a38a-560005d947e2'), (SELECT uuid FROM contact WHERE contact_type_uuid = @email_contact_type AND contact_value = 'contact@edinburgh-digital.co.uk')),
-    ((SELECT uuid FROM company WHERE customer_uuid = '62fdc814-e96c-11f0-a38a-560005d947e2'), (SELECT uuid FROM contact WHERE contact_type_uuid = @phone_contact_type AND contact_value = '+44 131 555 0201')),
-    ((SELECT uuid FROM company WHERE customer_uuid = '62fdc814-e96c-11f0-a38a-560005d947e2'), (SELECT uuid FROM contact WHERE contact_type_uuid = @fax_contact_type AND contact_value = '+44 131 555 0202')),
+    (@company_edinburgh, (SELECT uuid FROM contact WHERE contact_type_uuid = @email_contact_type AND contact_value = 'contact@edinburgh-digital.co.uk')),
+    (@company_edinburgh, (SELECT uuid FROM contact WHERE contact_type_uuid = @phone_contact_type AND contact_value = '+44 131 555 0201')),
+    (@company_edinburgh, (SELECT uuid FROM contact WHERE contact_type_uuid = @fax_contact_type AND contact_value = '+44 131 555 0202')),
     -- Glasgow Innovation Partners Ltd
-    ((SELECT uuid FROM company WHERE customer_uuid = '62fdc81c-e96c-11f0-a38a-560005d947e2'), (SELECT uuid FROM contact WHERE contact_type_uuid = @email_contact_type AND contact_value = 'hello@glasgow-innovation.co.uk')),
+    (@company_glasgow, (SELECT uuid FROM contact WHERE contact_type_uuid = @email_contact_type AND contact_value = 'hello@glasgow-innovation.co.uk')),
     /* Companies from France */
     -- Société Parisienne de Technologie SARL
-    ((SELECT uuid FROM company WHERE customer_uuid = '62fdc824-e96c-11f0-a38a-560005d947e2'), (SELECT uuid FROM contact WHERE contact_type_uuid = @email_contact_type AND contact_value = 'contact@spt-paris.fr')),
-    ((SELECT uuid FROM company WHERE customer_uuid = '62fdc824-e96c-11f0-a38a-560005d947e2'), (SELECT uuid FROM contact WHERE contact_type_uuid = @phone_contact_type AND contact_value = '+33 1 55 55 01 01')),
+    (@company_paris, (SELECT uuid FROM contact WHERE contact_type_uuid = @email_contact_type AND contact_value = 'contact@spt-paris.fr')),
+    (@company_paris, (SELECT uuid FROM contact WHERE contact_type_uuid = @phone_contact_type AND contact_value = '+33 1 55 55 01 01')),
     -- Lyon Consulting SA
-    ((SELECT uuid FROM company WHERE customer_uuid = '62fdc82a-e96c-11f0-a38a-560005d947e2'), (SELECT uuid FROM contact WHERE contact_type_uuid = @email_contact_type AND contact_value = 'info@lyon-consulting.fr')),
+    (@company_lyon, (SELECT uuid FROM contact WHERE contact_type_uuid = @email_contact_type AND contact_value = 'info@lyon-consulting.fr')),
     /* Companies from Germany */
     -- Berliner Technologie GmbH
-    ((SELECT uuid FROM company WHERE customer_uuid = '62fdc831-e96c-11f0-a38a-560005d947e2'), (SELECT uuid FROM contact WHERE contact_type_uuid = @email_contact_type AND contact_value = 'kontakt@berliner-tech.de')),
-    ((SELECT uuid FROM company WHERE customer_uuid = '62fdc831-e96c-11f0-a38a-560005d947e2'), (SELECT uuid FROM contact WHERE contact_type_uuid = @phone_contact_type AND contact_value = '+49 30 5555 0101')),
+    (@company_berlin, (SELECT uuid FROM contact WHERE contact_type_uuid = @email_contact_type AND contact_value = 'kontakt@berliner-tech.de')),
+    (@company_berlin, (SELECT uuid FROM contact WHERE contact_type_uuid = @phone_contact_type AND contact_value = '+49 30 5555 0101')),
     -- München Software AG
-    ((SELECT uuid FROM company WHERE customer_uuid = '62fdc838-e96c-11f0-a38a-560005d947e2'), (SELECT uuid FROM contact WHERE contact_type_uuid = @email_contact_type AND contact_value = 'info@muenchen-software.de')),
-    ((SELECT uuid FROM company WHERE customer_uuid = '62fdc838-e96c-11f0-a38a-560005d947e2'), (SELECT uuid FROM contact WHERE contact_type_uuid = @phone_contact_type AND contact_value = '+49 89 5555 0201')),
+    (@company_munich, (SELECT uuid FROM contact WHERE contact_type_uuid = @email_contact_type AND contact_value = 'info@muenchen-software.de')),
+    (@company_munich, (SELECT uuid FROM contact WHERE contact_type_uuid = @phone_contact_type AND contact_value = '+49 89 5555 0201')),
     -- Hamburg Digital Systems GmbH
-    ((SELECT uuid FROM company WHERE customer_uuid = '62fdc83f-e96c-11f0-a38a-560005d947e2'), (SELECT uuid FROM contact WHERE contact_type_uuid = @email_contact_type AND contact_value = 'service@hamburg-digital.de')),
+    (@company_hamburg, (SELECT uuid FROM contact WHERE contact_type_uuid = @email_contact_type AND contact_value = 'service@hamburg-digital.de')),
     /* Companies from Spain */
     -- Soluciones Tecnológicas Barcelona SL
-    ((SELECT uuid FROM company WHERE customer_uuid = '62fdc847-e96c-11f0-a38a-560005d947e2'), (SELECT uuid FROM contact WHERE contact_type_uuid = @email_contact_type AND contact_value = 'info@soluciones-barcelona.es')),
-    ((SELECT uuid FROM company WHERE customer_uuid = '62fdc847-e96c-11f0-a38a-560005d947e2'), (SELECT uuid FROM contact WHERE contact_type_uuid = @phone_contact_type AND contact_value = '+34 93 555 0101')),
+    (@company_barcelona, (SELECT uuid FROM contact WHERE contact_type_uuid = @email_contact_type AND contact_value = 'info@soluciones-barcelona.es')),
+    (@company_barcelona, (SELECT uuid FROM contact WHERE contact_type_uuid = @phone_contact_type AND contact_value = '+34 93 555 0101')),
     /* Companies from Italy */
     -- Roma Innovazione SRL
-    ((SELECT uuid FROM company WHERE customer_uuid = '62fdc84e-e96c-11f0-a38a-560005d947e2'), (SELECT uuid FROM contact WHERE contact_type_uuid = @email_contact_type AND contact_value = 'info@roma-innovazione.it'))
-;
+    (@company_rome, (SELECT uuid FROM contact WHERE contact_type_uuid = @email_contact_type AND contact_value = 'info@roma-innovazione.it'));
