@@ -24,3 +24,23 @@ INSERT INTO customer
     ('62fdc88b-e96c-11f0-a38a-560005d947e2', 'julia.kowalski@novapath-biotech.com',      '2022-12-05', '645a389fa0c1166db0344ae67c223021c8289385d75690c41f638fba08d8083d'),
     ('62fdc892-e96c-11f0-a38a-560005d947e2', 's.lewis@ironpeak-engineering.io',          '2022-12-20', '259b63e0063f091920c81885197ca1f16d009bc41e9916bb5409c966de9748d2')
 ;
+
+-- Companies from Scotland
+-- Companies from France
+-- Companies from Germany
+-- Companies from Spain
+-- Companies from Italy
+INSERT INTO company
+    (customer_uuid, company_name, tax_id, registration_number)
+    VALUES
+    ('62fdc7ca-e96c-11f0-a38a-560005d947e2', 'Highland Tech Solutions Ltd', 'GB123456789', 'SC123456'),
+    ('62fdc814-e96c-11f0-a38a-560005d947e2', 'Edinburgh Digital Services Ltd', 'GB234567890', 'SC234567'),
+    ('62fdc81c-e96c-11f0-a38a-560005d947e2', 'Glasgow Innovation Partners Ltd', 'GB345678901', 'SC345678'),
+    ('62fdc824-e96c-11f0-a38a-560005d947e2', 'Société Parisienne de Technologie SARL', 'FR12345678901', '123 456 789 RCS Paris'),
+    ('62fdc82a-e96c-11f0-a38a-560005d947e2', 'Lyon Consulting SA', 'FR23456789012', '234 567 890 RCS Lyon'),
+    ('62fdc831-e96c-11f0-a38a-560005d947e2', 'Berliner Technologie GmbH', 'DE123456789', 'HRB 12345'),
+    ('62fdc838-e96c-11f0-a38a-560005d947e2', 'München Software AG', 'DE234567890', 'HRB 23456'),
+    ('62fdc83f-e96c-11f0-a38a-560005d947e2', 'Hamburg Digital Systems GmbH', 'DE345678901', 'HRB 34567'),
+    ('62fdc847-e96c-11f0-a38a-560005d947e2', 'Soluciones Tecnológicas Barcelona SL', 'ESB12345678', 'B-12345678'),
+    ('62fdc84e-e96c-11f0-a38a-560005d947e2', 'Roma Innovazione SRL', 'IT12345678901', 'RM-123456')
+;

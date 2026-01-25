@@ -59,7 +59,6 @@ the files with the `data.` prefix:
 ```
 mariadb [credentials] < data.category.sql
 mariadb [credentials] < data.customer.sql
-mariadb [credentials] < data.company.sql
 ```
 
 Some people are uncomfortable with mariadb's interface.
