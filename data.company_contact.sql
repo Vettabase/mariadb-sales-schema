@@ -30,8 +30,7 @@ INSERT INTO contact
     (get_contact_type_uuid('email'), 'info@soluciones-barcelona.es'),
     (get_contact_type_uuid('phone'), '+34 93 555 0101'),
     /* Companies from Italy */
-    (get_contact_type_uuid('email'), 'info@roma-innovazione.it')
-;
+    (get_contact_type_uuid('email'), 'info@roma-innovazione.it');
 
 -- Link contacts to companies
 -- Store UUIDs in variables to avoid redundant subqueries
