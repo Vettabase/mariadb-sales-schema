@@ -116,7 +116,6 @@ INSERT INTO contact_type (name) VALUES
     ('email'),
     ('phone'),
     ('fax'),
-    ('address'),
     ('linkedin')
 ;
 
