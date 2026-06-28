@@ -71,8 +71,11 @@ CREATE TABLE customer (
 CREATE TABLE person (
     uuid UUID DEFAULT UUID_v7(),
     customer_uuid UUID NULL,
-    first_name VARCHAR(100) NOT NULL,
-    last_name VARCHAR(100) NOT NULL,
+    first_name VARCHAR(100) NOT NULL
+        CHECK (first_name > ''),
+    last_name VARCHAR(100) NOT NULL
+        CHECK (last_name > ''),
+    full_name VARCHAR(201) AS (CONCAT(first_name, ' ', last_name)) VIRTUAL,
     salutation_id SMALLINT UNSIGNED NULL,
     salutation_custom VARCHAR(20) NULL,
     date_of_birth DATE NOT NULL DEFAULT '0000-00-00',
