@@ -232,6 +232,7 @@ CREATE TABLE product (
     description TEXT,
     price DECIMAL(10, 2) NOT NULL,
     stock_quantity INT NOT NULL DEFAULT 0,
+    is_in_stock BOOL AS (stock_quantity > 0) VIRTUAL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     PRIMARY KEY (uuid),
     UNIQUE unq_sku (sku),
