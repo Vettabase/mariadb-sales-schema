@@ -52,6 +52,7 @@ CREATE TABLE customer (
     uuid UUID DEFAULT UUID_v7(),
     email VARCHAR(255) NOT NULL
         CHECK (email LIKE '%_@%_.%__'),
+    email_domain VARCHAR(255) AS (SUBSTRING_INDEX(email, '@', -1)) VIRTUAL,
     username VARCHAR(255) NOT NULL
         DEFAULT CONCAT('@', SUBSTRING_INDEX(email, '@', 1), '_', SUBSTRING_INDEX(email, '@', 2))
         COMMENT 'usernames must have only 1 @ as their first character',
@@ -59,7 +60,8 @@ CREATE TABLE customer (
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     PRIMARY KEY (uuid),
     UNIQUE unq_email_username (email, username)
-        COMMENT 'Multiple users from the same email are ok, but they must use different usernames. Usernames don''t need be unique.'
+        COMMENT 'Multiple users from the same email are ok, but they must use different usernames. Usernames don''t need be unique.',
+    INDEX idx_email_domain (email_domain)
 )
     WITH SYSTEM VERSIONING
     ENGINE InnoDB
@@ -69,8 +71,11 @@ CREATE TABLE customer (
 CREATE TABLE person (
     uuid UUID DEFAULT UUID_v7(),
     customer_uuid UUID NULL,
-    first_name VARCHAR(100) NOT NULL,
-    last_name VARCHAR(100) NOT NULL,
+    first_name VARCHAR(100) NOT NULL
+        CHECK (first_name > ''),
+    last_name VARCHAR(100) NOT NULL
+        CHECK (last_name > ''),
+    full_name VARCHAR(201) AS (CONCAT(first_name, ' ', last_name)) VIRTUAL,
     salutation_id SMALLINT UNSIGNED NULL,
     salutation_custom VARCHAR(20) NULL,
     date_of_birth DATE NOT NULL DEFAULT '0000-00-00',
@@ -228,13 +233,16 @@ CREATE TABLE product (
     main_category_id INT UNSIGNED NOT NULL
         COMMENT 'A product can belong to more categories, but must have one main category',
     sku VARCHAR(50) NOT NULL,
+    sku_category_code CHAR(3) COLLATE ascii_bin AS (SUBSTRING_INDEX(sku, '-', 1)) STORED,
     name VARCHAR(255) NOT NULL,
     description TEXT,
     price DECIMAL(10, 2) NOT NULL,
     stock_quantity INT NOT NULL DEFAULT 0,
+    is_in_stock BOOL AS (stock_quantity > 0) VIRTUAL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     PRIMARY KEY (uuid),
     UNIQUE unq_sku (sku),
+    INDEX idx_sku_category_code (sku_category_code),
     FOREIGN KEY (main_category_id)
         REFERENCES category (id)
         ON DELETE CASCADE
@@ -301,7 +309,7 @@ CREATE TABLE order_line (
     product_uuid UUID NOT NULL,
     quantity INT UNSIGNED NOT NULL,
     unit_price DECIMAL(10, 2) NOT NULL,
-    line_total DECIMAL(10, 2) NOT NULL,
+    line_total DECIMAL(10, 2) AS (quantity * unit_price) STORED,
     PRIMARY KEY (uuid),
     UNIQUE unq_order_uuid_product_uuid (order_uuid, product_uuid),
     FOREIGN KEY (order_uuid) REFERENCES sales_order (uuid) ON DELETE CASCADE ON UPDATE RESTRICT,
