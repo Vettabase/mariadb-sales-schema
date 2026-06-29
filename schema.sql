@@ -107,9 +107,9 @@ CREATE TABLE company (
 ;
 
 CREATE TABLE contact_type (
-    uuid UUID DEFAULT UUID_v7(),
+    id SMALLINT UNSIGNED AUTO_INCREMENT,
     name VARCHAR(50) NOT NULL,
-    PRIMARY KEY (uuid),
+    PRIMARY KEY (id),
     UNIQUE unq_name (name)
 )
     WITH SYSTEM VERSIONING
@@ -130,11 +130,11 @@ INSERT INTO contact_type (name) VALUES
 
 CREATE TABLE contact (
     uuid UUID DEFAULT UUID_v7(),
-    contact_type_uuid UUID NOT NULL,
+    contact_type_id SMALLINT UNSIGNED NOT NULL,
     contact_value VARCHAR(255) NOT NULL,
     PRIMARY KEY (uuid),
-    FOREIGN KEY (contact_type_uuid) REFERENCES contact_type(uuid) ON DELETE CASCADE ON UPDATE RESTRICT,
-    INDEX idx_contact_type_uuid (contact_type_uuid)
+    FOREIGN KEY (contact_type_id) REFERENCES contact_type(id) ON DELETE CASCADE ON UPDATE RESTRICT,
+    INDEX idx_contact_type_id (contact_type_id)
 )
     WITH SYSTEM VERSIONING
     ENGINE InnoDB
